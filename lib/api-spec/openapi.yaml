@@ -1,22 +1,33 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: COD Order Management API for Algeria
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: orders
+    description: Order management
+  - name: customers
+    description: Customer management
+  - name: agents
+    description: Delivery agent management
+  - name: products
+    description: Product management
+  - name: analytics
+    description: Analytics and reporting
+  - name: settings
+    description: Application settings
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,535 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List all orders
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: wilaya
+          in: query
+          schema:
+            type: string
+        - name: agentId
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderListResponse"
+
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+      responses:
+        "201":
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get a single order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        "404":
+          description: Not found
+
+    put:
+      operationId: updateOrder
+      tags: [orders]
+      summary: Update an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderRequest"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+    delete:
+      operationId: deleteOrder
+      tags: [orders]
+      summary: Delete an order
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /orders/{id}/status:
+    patch:
+      operationId: updateOrderStatus
+      tags: [orders]
+      summary: Update order status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateStatusRequest"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: List all customers
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: wilaya
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerListResponse"
+
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      summary: Create a new customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerRequest"
+      responses:
+        "201":
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      summary: Get a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customer details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+    put:
+      operationId: updateCustomer
+      tags: [customers]
+      summary: Update a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerRequest"
+      responses:
+        "200":
+          description: Updated customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+    delete:
+      operationId: deleteCustomer
+      tags: [customers]
+      summary: Delete a customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /agents:
+    get:
+      operationId: listAgents
+      tags: [agents]
+      summary: List all delivery agents
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of agents
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentListResponse"
+
+    post:
+      operationId: createAgent
+      tags: [agents]
+      summary: Create a new agent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAgentRequest"
+      responses:
+        "201":
+          description: Agent created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+
+  /agents/{id}:
+    get:
+      operationId: getAgent
+      tags: [agents]
+      summary: Get an agent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Agent details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+
+    put:
+      operationId: updateAgent
+      tags: [agents]
+      summary: Update an agent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAgentRequest"
+      responses:
+        "200":
+          description: Updated agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Agent"
+
+    delete:
+      operationId: deleteAgent
+      tags: [agents]
+      summary: Delete an agent
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /products:
+    get:
+      operationId: listProducts
+      tags: [products]
+      summary: List all products
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductListResponse"
+
+    post:
+      operationId: createProduct
+      tags: [products]
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProductRequest"
+      responses:
+        "201":
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /products/{id}:
+    put:
+      operationId: updateProduct
+      tags: [products]
+      summary: Update a product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProductRequest"
+      responses:
+        "200":
+          description: Updated product
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+    delete:
+      operationId: deleteProduct
+      tags: [products]
+      summary: Delete a product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /analytics/summary:
+    get:
+      operationId: getAnalyticsSummary
+      tags: [analytics]
+      summary: Get analytics summary stats
+      parameters:
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Analytics summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnalyticsSummary"
+
+  /analytics/by-wilaya:
+    get:
+      operationId: getAnalyticsByWilaya
+      tags: [analytics]
+      summary: Get order stats grouped by wilaya
+      responses:
+        "200":
+          description: Stats by wilaya
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WilayaStat"
+
+  /analytics/by-status:
+    get:
+      operationId: getAnalyticsByStatus
+      tags: [analytics]
+      summary: Get order stats grouped by status
+      responses:
+        "200":
+          description: Stats by status
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StatusStat"
+
+  /analytics/revenue-trend:
+    get:
+      operationId: getRevenueTrend
+      tags: [analytics]
+      summary: Get daily revenue trend
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 30
+      responses:
+        "200":
+          description: Revenue trend
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RevenueTrendPoint"
+
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get application settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
+    put:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update application settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Settings"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +574,534 @@ components:
       required:
         - status
 
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        orderNumber:
+          type: string
+        status:
+          type: string
+          enum: [pending, confirmed, in_transit, delivered, returned, cancelled]
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        customerPhone2:
+          type: string
+          nullable: true
+        wilaya:
+          type: string
+        commune:
+          type: string
+        address:
+          type: string
+        productName:
+          type: string
+        productId:
+          type: integer
+          nullable: true
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        totalAmount:
+          type: number
+        shippingCost:
+          type: number
+        notes:
+          type: string
+          nullable: true
+        agentId:
+          type: integer
+          nullable: true
+        agentName:
+          type: string
+          nullable: true
+        customerId:
+          type: integer
+          nullable: true
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        deliveredAt:
+          type: string
+          nullable: true
+      required:
+        - id
+        - orderNumber
+        - status
+        - customerName
+        - customerPhone
+        - wilaya
+        - commune
+        - address
+        - productName
+        - quantity
+        - unitPrice
+        - totalAmount
+        - shippingCost
+        - createdAt
+        - updatedAt
+
+    OrderListResponse:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - orders
+        - total
+        - page
+        - limit
+        - totalPages
+
+    CreateOrderRequest:
+      type: object
+      properties:
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        customerPhone2:
+          type: string
+          nullable: true
+        wilaya:
+          type: string
+        commune:
+          type: string
+        address:
+          type: string
+        productName:
+          type: string
+        productId:
+          type: integer
+          nullable: true
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        shippingCost:
+          type: number
+        notes:
+          type: string
+          nullable: true
+        agentId:
+          type: integer
+          nullable: true
+        customerId:
+          type: integer
+          nullable: true
+      required:
+        - customerName
+        - customerPhone
+        - wilaya
+        - commune
+        - address
+        - productName
+        - quantity
+        - unitPrice
+        - shippingCost
+
+    UpdateOrderRequest:
+      type: object
+      properties:
+        customerName:
+          type: string
+        customerPhone:
+          type: string
+        customerPhone2:
+          type: string
+          nullable: true
+        wilaya:
+          type: string
+        commune:
+          type: string
+        address:
+          type: string
+        productName:
+          type: string
+        productId:
+          type: integer
+          nullable: true
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        shippingCost:
+          type: number
+        notes:
+          type: string
+          nullable: true
+        agentId:
+          type: integer
+          nullable: true
+
+    UpdateStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, confirmed, in_transit, delivered, returned, cancelled]
+        notes:
+          type: string
+          nullable: true
+      required:
+        - status
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        phone2:
+          type: string
+          nullable: true
+        wilaya:
+          type: string
+        commune:
+          type: string
+        address:
+          type: string
+        totalOrders:
+          type: integer
+        deliveredOrders:
+          type: integer
+        returnedOrders:
+          type: integer
+        totalSpent:
+          type: number
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - phone
+        - wilaya
+        - commune
+        - address
+        - totalOrders
+        - deliveredOrders
+        - returnedOrders
+        - totalSpent
+        - createdAt
+
+    CustomerListResponse:
+      type: object
+      properties:
+        customers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Customer"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - customers
+        - total
+        - page
+        - limit
+        - totalPages
+
+    CreateCustomerRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        phone2:
+          type: string
+          nullable: true
+        wilaya:
+          type: string
+        commune:
+          type: string
+        address:
+          type: string
+        notes:
+          type: string
+          nullable: true
+      required:
+        - name
+        - phone
+        - wilaya
+        - commune
+        - address
+
+    Agent:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        wilaya:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+        totalDeliveries:
+          type: integer
+        successRate:
+          type: number
+        currentOrders:
+          type: integer
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - phone
+        - wilaya
+        - status
+        - totalDeliveries
+        - successRate
+        - currentOrders
+        - createdAt
+
+    AgentListResponse:
+      type: object
+      properties:
+        agents:
+          type: array
+          items:
+            $ref: "#/components/schemas/Agent"
+        total:
+          type: integer
+      required:
+        - agents
+        - total
+
+    CreateAgentRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        wilaya:
+          type: string
+        status:
+          type: string
+          enum: [active, inactive]
+        notes:
+          type: string
+          nullable: true
+      required:
+        - name
+        - phone
+        - wilaya
+        - status
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        sku:
+          type: string
+          nullable: true
+        defaultPrice:
+          type: number
+        stock:
+          type: integer
+          nullable: true
+        category:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - defaultPrice
+        - active
+        - createdAt
+
+    ProductListResponse:
+      type: object
+      properties:
+        products:
+          type: array
+          items:
+            $ref: "#/components/schemas/Product"
+        total:
+          type: integer
+      required:
+        - products
+        - total
+
+    CreateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        sku:
+          type: string
+          nullable: true
+        defaultPrice:
+          type: number
+        stock:
+          type: integer
+          nullable: true
+        category:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        active:
+          type: boolean
+      required:
+        - name
+        - defaultPrice
+        - active
+
+    AnalyticsSummary:
+      type: object
+      properties:
+        totalOrders:
+          type: integer
+        pendingOrders:
+          type: integer
+        confirmedOrders:
+          type: integer
+        inTransitOrders:
+          type: integer
+        deliveredOrders:
+          type: integer
+        returnedOrders:
+          type: integer
+        cancelledOrders:
+          type: integer
+        totalRevenue:
+          type: number
+        deliveryRate:
+          type: number
+        returnRate:
+          type: number
+        avgOrderValue:
+          type: number
+        todayOrders:
+          type: integer
+        todayRevenue:
+          type: number
+      required:
+        - totalOrders
+        - pendingOrders
+        - confirmedOrders
+        - inTransitOrders
+        - deliveredOrders
+        - returnedOrders
+        - cancelledOrders
+        - totalRevenue
+        - deliveryRate
+        - returnRate
+        - avgOrderValue
+        - todayOrders
+        - todayRevenue
+
+    WilayaStat:
+      type: object
+      properties:
+        wilaya:
+          type: string
+        totalOrders:
+          type: integer
+        deliveredOrders:
+          type: integer
+        revenue:
+          type: number
+      required:
+        - wilaya
+        - totalOrders
+        - deliveredOrders
+        - revenue
+
+    StatusStat:
+      type: object
+      properties:
+        status:
+          type: string
+        count:
+          type: integer
+        percentage:
+          type: number
+      required:
+        - status
+        - count
+        - percentage
+
+    RevenueTrendPoint:
+      type: object
+      properties:
+        date:
+          type: string
+        revenue:
+          type: number
+        orders:
+          type: integer
+      required:
+        - date
+        - revenue
+        - orders
+
+    Settings:
+      type: object
+      properties:
+        companyName:
+          type: string
+        companyPhone:
+          type: string
+        defaultShippingCost:
+          type: number
+        currency:
+          type: string
+        lowStockThreshold:
+          type: integer
+        autoConfirmOrders:
+          type: boolean
+      required:
+        - companyName
+        - companyPhone
+        - defaultShippingCost
+        - currency
+        - lowStockThreshold
+        - autoConfirmOrders

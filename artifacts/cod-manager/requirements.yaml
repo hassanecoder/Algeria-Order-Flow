@@ -1,0 +1,17 @@
+packages:
+  "framer-motion": "For page transitions and smooth UI animations"
+  "recharts": "For analytics and dashboard charts"
+  "date-fns": "For date formatting"
+  "clsx": "For conditional tailwind classes"
+  "tailwind-merge": "For merging tailwind classes safely"
+
+images:
+  - path: "artifacts/cod-manager/public/images/dashboard-hero.png"
+    description: "A clean, abstract, professional gradient mesh in soft blues and slates, suitable for a dashboard header background"
+    aspect_ratio: "16:9"
+
+notes:
+  - React Query hooks are imported directly from @workspace/api-client-react
+  - Routing is handled via wouter
+  - Application uses Algerian DZD as default currency
+  - Forms use controlled state for maximum stability without complex resolver dependencies
