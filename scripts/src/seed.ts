@@ -99,14 +99,24 @@ function generateOrderNumber(date: Date): string {
 }
 
 async function main() {
-  console.log("Seeding database...");
+  const seedMode = process.env.SEED_MODE === "bootstrap" ? "bootstrap" : "reset";
+  console.log(`Seeding database in ${seedMode} mode...`);
 
-  // Clear existing data
-  await db.delete(ordersTable);
-  await db.delete(customersTable);
-  await db.delete(agentsTable);
-  await db.delete(productsTable);
-  await db.delete(settingsTable);
+  if (seedMode === "bootstrap") {
+    const existing = await db.select().from(productsTable).limit(1);
+    if (existing.length > 0) {
+      console.log("Bootstrap seed skipped; products already present");
+      return;
+    }
+  }
+
+  if (seedMode === "reset") {
+    await db.delete(ordersTable);
+    await db.delete(customersTable);
+    await db.delete(agentsTable);
+    await db.delete(productsTable);
+    await db.delete(settingsTable);
+  }
 
   // Seed settings
   await db.insert(settingsTable).values({
