@@ -1,0 +1,21 @@
+{
+  "name": "COD Order Manager",
+  "short_name": "COD Manager",
+  "description": "Streamline your cash-on-delivery operations in Algeria. Track COD orders, manage deliveries, handle returns, and optimize your order flow with our powerful management platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#DC2626",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml"
+    }
+  ]
+}
